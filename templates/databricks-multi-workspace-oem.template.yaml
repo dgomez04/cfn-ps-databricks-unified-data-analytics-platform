@@ -16,8 +16,8 @@ Metadata:
           default: Workspace configuration
         Parameters:
           - AccountId
-          - Username
-          - Password
+          - ClientId
+          - ClientSecret
           - CustomerName 
           - AuthoritativeUserEmail
           - AuthoritativeUserFullName
@@ -62,10 +62,10 @@ Metadata:
     ParameterLabels:
       AccountId:
         default: Databricks account ID
-      Username:
-        default: Workspace account email address
-      Password:
-        default: Workspace account password  
+      ClientId:
+        default: Service Prinipal ClientId
+      ClientSecret:
+        default: Service Principal ClientSecret  
       CustomerName:
         default: Customer Name
       AuthoritativeUserEmail:
@@ -161,14 +161,14 @@ Parameters:
     MinLength: '36'
     Type: String
     Default: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-  Username:
-    Description: Your account email address, which is used for REST API authentication as your user name. This is case-sensitive. Use the same capitalization as when you sent it to your Databricks representative.
+  ClientId:
+    Description: Your service prinicpal ClientId, which is used for REST API authentication as your user name. This is case-sensitive. Use the same capitalization as when you sent it to your Databricks representative.
     AllowedPattern: '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$'
     ConstraintDescription: Must be a valid email format.
     MinLength: '8'
     Type: String
-  Password:
-    Description: Your account password, which is used for REST API authentication. This is case-sensitive. Minimum length is 8 characters.
+  ClientSecret:
+    Description: Your service prinicpal ClientSecret, which is used for REST API authentication. This is case-sensitive. Minimum length is 8 characters.
     MinLength: '8'
     NoEcho: 'true'
     Type: String  
@@ -1137,8 +1137,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_CUSTOMER_MANAGED_KEY
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       key_arn: !Ref KeyArn
       key_alias: !Ref KeyAlias
       use_cases: !Ref KeyUseCases
@@ -1152,8 +1152,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_CREDENTIALS
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       credentials_name: !If [IsDeploymentNameSet, !Sub '${DeploymentName}-credentials', !Sub '${TagValue}-credentials']
       role_arn: !GetAtt crossAccountAccessRole.Arn
       user_agent: 'databricks-CloudFormation-OEM-provider'
@@ -1165,8 +1165,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_STORAGE_CONFIGURATIONS
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       storage_config_name: !If [IsDeploymentNameSet, !Sub '${DeploymentName}-storage', !Sub '${TagValue}-storage']
       s3bucket_name: !Ref assetsS3Bucket
       user_agent: 'databricks-CloudFormation-OEM-provider'
@@ -1179,8 +1179,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_VPC_ENDPOINT
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       aws_region: !Ref AWS::Region
       endpoint_name: !Sub ${AWS::StackName}_workspaceVpcEndpoint
       vpc_endpoint_id: !Ref DBSRestApiInterfaceEndpoint
@@ -1194,8 +1194,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_VPC_ENDPOINT
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       aws_region: !Ref AWS::Region
       endpoint_name: !Sub ${AWS::StackName}_workspaceVpcEndpoint
       vpc_endpoint_id: !Ref DBSRelayInterfaceEndpoint
@@ -1209,8 +1209,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_NETWORKS
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       network_name: !If [IsDeploymentNameSet, !Sub '${DeploymentName}-network', !Sub '${TagValue}-network']
       vpc_id: !If [CreateDBManagedVPC, !Ref DBSVpc, !Ref VPCID]
       subnet_ids: !If
@@ -1233,8 +1233,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_PRIVATE_ACCESS_CONFIGURATION
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       aws_region: !Ref AWS::Region
       private_access_settings_name:  !Sub ${TagValue}_privateAccessSettings
       public_access_enabled: true
@@ -1248,8 +1248,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_WORKSPACES
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       workspace_name: !If [IsDeploymentNameSet, !Sub '${DeploymentName}-workspace', !Sub '${TagValue}-workspace']
       deployment_name: !Ref DeploymentName
       aws_region: !Ref AWS::Region
@@ -1272,8 +1272,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: REGISTER_INSTANCE_PROFILE
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       workspace_id: !Ref createWorkspace
       instance_profile_arn: !GetAtt DefaultInstanceProfile.Arn
       user_agent: 'databricks-CloudFormation-OEM-provider'
@@ -1286,8 +1286,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_HIPAA_CLUSTER_POLICY
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       workspace_deployment_name: !GetAtt createWorkspace.DeploymentName
       user_agent: 'databricks-CloudFormation-OEM-provider'
   
@@ -1298,8 +1298,8 @@ Resources:
       ServiceToken: !GetAtt databricksApiFunction.Arn
       action: CREATE_STARTER_CLUSTER
       accountId: !Ref AccountId
-      username: !Ref Username
-      password: !Ref Password
+      clientId: !Ref ClientId
+      clientSecret: !Ref ClientSecret
       workspace_deployment_name: !GetAtt createWorkspace.DeploymentName
       instance_profile_arn: !If [CreateDefaultInstanceProfile, !Ref registerInstanceProfile, !Ref AWS::NoValue]
       policy_id: !If [ShouldCreateHipaaClusterPolicy, !Ref createHipaaClusterPolicy, !Ref AWS::NoValue]

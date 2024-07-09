@@ -58,11 +58,11 @@ def handler(event, context):
 
     try:
         # Create the Account API session
-        checkForMissingProperties(event, ['accountId', 'username', 'password'])
+        checkForMissingProperties(event, ['accountId', 'clientId', 'clientSecret'])
         apiSession = AccountApiSession(
             event['ResourceProperties']['accountId'],
-            event['ResourceProperties']['username'],
-            event['ResourceProperties']['password'],
+            event['ResourceProperties']['clientId'],
+            event['ResourceProperties']['clientSecret'],
             event['ResourceProperties']['user_agent'] + ' - ' + userAgentVersion if 'user_agent' in event['ResourceProperties'] else None
         )
 
